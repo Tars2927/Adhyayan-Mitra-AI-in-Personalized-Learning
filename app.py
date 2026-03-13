@@ -8,7 +8,7 @@ import plotly.express as px
 
 # --- PAGE CONFIG ---
 st.set_page_config(
-    page_title="AI Learning Assistant",
+    page_title="Adhyayan Mitra · AI Learning Assistant",
     page_icon="🎓",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -17,202 +17,531 @@ st.set_page_config(
 # --- CUSTOM CSS ---
 st.markdown("""
 <style>
-    /* Main background and text */
+    /* Google Fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
+
+    /* ── Base ─────────────────────────────────── */
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+
     .stApp {
-        background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+        background: linear-gradient(145deg, #07071a 0%, #0f0f2e 50%, #130d2a 100%);
+        min-height: 100vh;
     }
-    
-    /* Header styling */
+
+    /* ── Animated gradient keyframes ─────────── */
+    @keyframes gradientShift {
+        0%   { background-position: 0% 50%; }
+        50%  { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pulse-ring {
+        0%   { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(139,92,246,0.5); }
+        70%  { transform: scale(1);    box-shadow: 0 0 0 14px rgba(139,92,246,0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(139,92,246,0); }
+    }
+
+    /* ── Header ──────────────────────────────── */
     .main-header {
-        background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
-        padding: 2rem;
-        border-radius: 15px;
+        background: linear-gradient(270deg, #4f46e5, #7c3aed, #6366f1, #8b5cf6);
+        background-size: 300% 300%;
+        animation: gradientShift 8s ease infinite, fadeInUp 0.6s ease both;
+        padding: 2.5rem 2.5rem 2rem;
+        border-radius: 20px;
         margin-bottom: 2rem;
-        box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        box-shadow: 0 12px 40px rgba(99,102,241,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+        position: relative;
+        overflow: hidden;
     }
-    
+
+    .main-header::before {
+        content: '';
+        position: absolute;
+        top: -50%; left: -50%;
+        width: 200%; height: 200%;
+        background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%);
+        pointer-events: none;
+    }
+
     .main-header h1 {
-        color: white;
-        font-size: 2.5rem;
+        color: #ffffff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.6rem;
         font-weight: 700;
         margin: 0;
-        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        letter-spacing: -0.5px;
+        text-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
-    
-    .main-header p {
-        color: rgba(255, 255, 255, 0.9);
-        font-size: 1.1rem;
-        margin-top: 0.5rem;
+
+    .main-header .tagline {
+        color: rgba(255,255,255,0.88);
+        font-size: 1.05rem;
+        margin-top: 0.6rem;
+        font-weight: 400;
+        max-width: 620px;
     }
-    
-    /* Sidebar styling */
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #1e1e3f 0%, #2d2d4a 100%);
+
+    .main-header .badges {
+        margin-top: 1rem;
+        display: flex;
+        gap: 0.6rem;
+        flex-wrap: wrap;
     }
-    
-    [data-testid="stSidebar"] h2 {
-        color: #a5b4fc;
-        font-size: 1.3rem;
+
+    .badge {
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: #fff;
+        padding: 0.25rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.78rem;
         font-weight: 600;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #4f46e5;
+        letter-spacing: 0.3px;
     }
-    
-    /* Metric cards */
-    .metric-card {
-        background: linear-gradient(135deg, #2d2d4a 0%, #3d3d5a 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        border-left: 4px solid #8b5cf6;
-        margin-bottom: 1rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+    /* ── Sidebar ─────────────────────────────── */
+    [data-testid="stSidebar"] {
+        background: linear-gradient(180deg, #13132e 0%, #1e1e42 100%);
+        border-right: 1px solid rgba(139,92,246,0.18);
     }
-    
-    .metric-label {
-        color: #a5b4fc;
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    
-    .metric-value {
-        color: #ffffff;
-        font-size: 2.5rem;
+
+    [data-testid="stSidebar"] .sidebar-title {
+        font-family: 'Space Grotesk', sans-serif;
+        color: #c4b5fd;
+        font-size: 1.25rem;
         font-weight: 700;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid rgba(99,102,241,0.5);
+        margin-bottom: 1.2rem;
+    }
+
+    .sidebar-section {
+        background: rgba(99,102,241,0.08);
+        border: 1px solid rgba(99,102,241,0.18);
+        border-radius: 12px;
+        padding: 1rem 1rem 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-section-title {
+        color: #a5b4fc;
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: 0.75rem;
+    }
+
+    .sidebar-tip {
+        background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(99,102,241,0.1));
+        border-left: 3px solid #6366f1;
+        border-radius: 0 8px 8px 0;
+        padding: 0.75rem 1rem;
+        color: #c7d2fe;
+        font-size: 0.85rem;
+        line-height: 1.5;
         margin-top: 0.5rem;
     }
-    
-    /* Prediction result box */
-    .prediction-box {
-        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-        padding: 2rem;
-        border-radius: 15px;
-        text-align: center;
-        margin: 2rem 0;
-        box-shadow: 0 8px 32px rgba(79, 70, 229, 0.4);
+
+    /* ── Metric cards ────────────────────────── */
+    .metric-card {
+        background: linear-gradient(135deg, #1e1e42 0%, #252550 100%);
+        padding: 1.4rem 1.6rem;
+        border-radius: 16px;
+        border-top: 3px solid transparent;
+        margin-bottom: 0.75rem;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        position: relative;
+        overflow: hidden;
+        animation: fadeInUp 0.5s ease both;
     }
-    
-    .prediction-box h2 {
-        color: white;
-        font-size: 1.5rem;
-        margin-bottom: 1rem;
+
+    .metric-card::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 60%);
+        pointer-events: none;
+        border-radius: 16px;
     }
-    
-    .prediction-box .grade {
-        color: white;
-        font-size: 3.5rem;
-        font-weight: 800;
-        text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+
+    .metric-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     }
-    
-    /* Comparison box */
-    .comparison-box {
-        background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-        padding: 1.5rem;
-        border-radius: 12px;
-        text-align: center;
-        box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+
+    .metric-card.good  { border-top-color: #10b981; }
+    .metric-card.warn  { border-top-color: #f59e0b; }
+    .metric-card.bad   { border-top-color: #ef4444; }
+    .metric-card.neutral { border-top-color: #8b5cf6; }
+
+    .metric-icon {
+        font-size: 1.6rem;
+        margin-bottom: 0.4rem;
     }
-    
-    .comparison-box.negative {
-        background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
-        box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+
+    .metric-label {
+        color: #94a3b8;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
     }
-    
-    .comparison-box h3 {
-        color: white;
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
-    }
-    
-    .comparison-box .diff {
-        color: white;
-        font-size: 2rem;
+
+    .metric-value {
+        color: #f1f5f9;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 2.2rem;
         font-weight: 700;
+        margin-top: 0.3rem;
+        line-height: 1;
     }
-    
-    /* Response container */
+
+    .metric-sub {
+        color: #64748b;
+        font-size: 0.78rem;
+        margin-top: 0.3rem;
+    }
+
+    /* ── Prediction result ───────────────────── */
+    .prediction-box {
+        background: linear-gradient(135deg, #4338ca 0%, #6d28d9 50%, #7c3aed 100%);
+        padding: 2.5rem 2rem;
+        border-radius: 20px;
+        text-align: center;
+        margin: 1.5rem 0;
+        box-shadow: 0 12px 40px rgba(79,70,229,0.45);
+        animation: fadeInUp 0.5s ease both;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .prediction-box::before {
+        content: '';
+        position: absolute;
+        top: -30%; right: -20%;
+        width: 60%; height: 160%;
+        background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 65%);
+        pointer-events: none;
+    }
+
+    .prediction-box h2 {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .prediction-box .grade {
+        color: #ffffff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 4.5rem;
+        font-weight: 800;
+        text-shadow: 0 4px 16px rgba(0,0,0,0.35);
+        line-height: 1;
+    }
+
+    .grade-letter {
+        display: inline-block;
+        background: rgba(255,255,255,0.18);
+        border: 2px solid rgba(255,255,255,0.3);
+        color: #fff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.6rem;
+        font-weight: 700;
+        padding: 0.2rem 1rem;
+        border-radius: 30px;
+        margin-top: 0.75rem;
+        animation: pulse-ring 2.5s ease-out infinite;
+    }
+
+    .grade-progress-wrap {
+        background: rgba(255,255,255,0.12);
+        border-radius: 30px;
+        height: 10px;
+        margin: 1.2rem auto 0;
+        max-width: 280px;
+        overflow: hidden;
+    }
+
+    .grade-progress-bar {
+        height: 100%;
+        border-radius: 30px;
+        background: linear-gradient(90deg, #fbbf24, #34d399);
+        transition: width 1s ease;
+    }
+
+    /* ── Comparison box ──────────────────────── */
+    .comparison-box {
+        background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+        padding: 1.8rem;
+        border-radius: 16px;
+        text-align: center;
+        box-shadow: 0 6px 24px rgba(16,185,129,0.35);
+    }
+
+    .comparison-box.negative {
+        background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%);
+        box-shadow: 0 6px 24px rgba(239,68,68,0.35);
+    }
+
+    .comparison-box.neutral-diff {
+        background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 100%);
+        box-shadow: 0 6px 24px rgba(37,99,235,0.35);
+    }
+
+    .comparison-box h3 {
+        color: rgba(255,255,255,0.9);
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin-bottom: 0.6rem;
+    }
+
+    .comparison-box .grade {
+        color: #fff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 3rem;
+        font-weight: 800;
+    }
+
+    .comparison-box .diff {
+        color: rgba(255,255,255,0.85);
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-top: 0.4rem;
+    }
+
+    /* ── Response container ──────────────────── */
     .response-container {
-        background: rgba(45, 45, 74, 0.6);
-        backdrop-filter: blur(10px);
-        padding: 2rem;
-        border-radius: 15px;
-        border: 1px solid rgba(139, 92, 246, 0.3);
-        margin-top: 2rem;
+        background: rgba(30,30,66,0.7);
+        backdrop-filter: blur(12px);
+        padding: 2rem 2.2rem;
+        border-radius: 18px;
+        border: 1px solid rgba(139,92,246,0.25);
+        margin-top: 1.5rem;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.25);
+        animation: fadeInUp 0.5s ease both;
     }
-    
-    /* Tab styling */
+
+    .response-container h3 {
+        color: #c4b5fd;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+    }
+
+    /* ── Tabs ────────────────────────────────── */
     .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-        background: rgba(45, 45, 74, 0.4);
-        border-radius: 10px;
+        gap: 6px;
+        background: rgba(30,30,66,0.5);
+        border-radius: 14px;
         padding: 0.5rem;
+        border: 1px solid rgba(99,102,241,0.18);
     }
-    
+
     .stTabs [data-baseweb="tab"] {
         background: transparent;
-        border-radius: 8px;
-        color: #a5b4fc;
+        border-radius: 10px;
+        color: #94a3b8;
         font-weight: 600;
-        padding: 0.75rem 1.5rem;
+        font-size: 0.9rem;
+        padding: 0.65rem 1.3rem;
+        transition: all 0.2s ease;
     }
-    
+
+    .stTabs [data-baseweb="tab"]:hover {
+        color: #c4b5fd;
+        background: rgba(99,102,241,0.1);
+    }
+
     .stTabs [aria-selected="true"] {
-        background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
-        color: white;
+        background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%) !important;
+        color: white !important;
+        box-shadow: 0 4px 12px rgba(99,102,241,0.4);
     }
-    
-    /* Button styling */
+
+    /* ── Buttons ─────────────────────────────── */
     .stButton > button {
         background: linear-gradient(120deg, #6366f1 0%, #8b5cf6 100%);
         color: white;
-        font-weight: 600;
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: 1rem;
         padding: 0.75rem 2rem;
-        border-radius: 10px;
+        border-radius: 12px;
         border: none;
-        box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
-        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(99,102,241,0.45);
+        transition: all 0.25s ease;
         width: 100%;
-        font-size: 1.1rem;
+        letter-spacing: 0.3px;
     }
-    
+
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+        box-shadow: 0 8px 24px rgba(99,102,241,0.6);
+        background: linear-gradient(120deg, #4f46e5 0%, #7c3aed 100%);
     }
-    
-    /* Slider styling */
-    .stSlider > div > div > div {
-        background: #4f46e5;
+
+    .stButton > button:active {
+        transform: translateY(0);
     }
-    
-    /* Info boxes */
+
+    /* ── Slider ──────────────────────────────── */
+    .stSlider [data-baseweb="slider"] [role="slider"] {
+        background: #8b5cf6;
+        border: 3px solid #c4b5fd;
+        width: 20px; height: 20px;
+    }
+
+    /* ── Info / tip boxes ────────────────────── */
     .info-box {
-        background: rgba(59, 130, 246, 0.1);
-        border-left: 4px solid #3b82f6;
-        padding: 1rem;
-        border-radius: 8px;
-        margin: 1rem 0;
+        background: linear-gradient(135deg, rgba(59,130,246,0.1), rgba(99,102,241,0.08));
+        border-left: 3px solid #6366f1;
+        padding: 0.85rem 1rem;
+        border-radius: 0 10px 10px 0;
+        margin: 0.75rem 0;
+        color: #c7d2fe;
+        font-size: 0.88rem;
+        line-height: 1.5;
     }
-    
-    /* Quiz container */
+
+    /* ── Quiz container ──────────────────────── */
     .quiz-container {
-        background: rgba(45, 45, 74, 0.6);
-        backdrop-filter: blur(10px);
-        padding: 2rem;
-        border-radius: 15px;
-        border: 1px solid rgba(139, 92, 246, 0.3);
+        background: rgba(30,30,66,0.7);
+        backdrop-filter: blur(12px);
+        padding: 2rem 2.2rem;
+        border-radius: 18px;
+        border: 1px solid rgba(139,92,246,0.25);
         margin-top: 1rem;
+        box-shadow: 0 4px 24px rgba(0,0,0,0.25);
     }
-    
-    /* What-if section */
+
+    /* ── What-if section ─────────────────────── */
     .whatif-section {
-        background: rgba(45, 45, 74, 0.4);
-        padding: 1.5rem;
-        border-radius: 12px;
-        border: 2px dashed rgba(139, 92, 246, 0.5);
+        background: rgba(30,30,66,0.45);
+        padding: 1.5rem 1.8rem;
+        border-radius: 16px;
+        border: 2px dashed rgba(139,92,246,0.35);
         margin: 1rem 0;
+    }
+
+    /* ── Grade scale reference ───────────────── */
+    .grade-scale {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.75rem;
+    }
+
+    .grade-chip {
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+    }
+
+    .chip-a  { background: rgba(16,185,129,0.2); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+    .chip-b  { background: rgba(99,102,241,0.2); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+    .chip-c  { background: rgba(245,158,11,0.2); color: #fcd34d; border: 1px solid rgba(245,158,11,0.3); }
+    .chip-d  { background: rgba(239,68,68,0.2);  color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+
+    /* ── Section headings ────────────────────── */
+    .section-heading {
+        color: #e0e7ff;
+        font-family: 'Space Grotesk', sans-serif;
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.4rem;
+    }
+
+    .section-sub {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+    }
+
+    /* ── Insight row ─────────────────────────── */
+    .insight-row {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.65rem 0;
+        border-bottom: 1px solid rgba(99,102,241,0.12);
+    }
+
+    .insight-row:last-child { border-bottom: none; }
+
+    .insight-label {
+        color: #94a3b8;
+        font-size: 0.88rem;
+        flex: 1;
+    }
+
+    .insight-bar-wrap {
+        flex: 2;
+        background: rgba(255,255,255,0.06);
+        border-radius: 20px;
+        height: 8px;
+        overflow: hidden;
+    }
+
+    .insight-bar {
+        height: 100%;
+        border-radius: 20px;
+        transition: width 0.8s ease;
+    }
+
+    .insight-score {
+        color: #e0e7ff;
+        font-weight: 700;
+        font-size: 0.88rem;
+        min-width: 42px;
+        text-align: right;
+    }
+
+    /* ── Footer ──────────────────────────────── */
+    .footer {
+        text-align: center;
+        padding: 1.5rem;
+        margin-top: 1rem;
+        border-top: 1px solid rgba(99,102,241,0.18);
+        color: #475569;
+        font-size: 0.85rem;
+    }
+
+    .footer a { color: #818cf8; text-decoration: none; }
+    .footer a:hover { text-decoration: underline; }
+
+    /* ── Streamlit overrides ─────────────────── */
+    .stSelectbox label, .stSlider label, .stTextInput label {
+        color: #94a3b8 !important;
+        font-size: 0.88rem !important;
+        font-weight: 500 !important;
+    }
+
+    div[data-testid="stDataFrame"] {
+        border-radius: 12px;
+        overflow: hidden;
+        border: 1px solid rgba(99,102,241,0.2);
+    }
+
+    .stSpinner > div {
+        border-top-color: #8b5cf6 !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -245,6 +574,56 @@ MODEL_COLUMNS = ['age', 'Medu', 'Fedu', 'traveltime', 'studytime', 'failures',
                  'internet_yes', 'romantic_yes']
 
 # --- HELPER FUNCTIONS ---
+def grade_letter(grade_20):
+    """Return a tuple of (label, hex colour, CSS chip class) for a score out of 20 (Portuguese scale).
+    
+    Labels: 'A (Excellent)', 'B (Good)', 'C (Satisfactory)', 'D (Needs Improvement)'
+    """
+    if grade_20 >= 17:
+        return "A (Excellent)", "#10b981", "chip-a"
+    elif grade_20 >= 14:
+        return "B (Good)", "#818cf8", "chip-b"
+    elif grade_20 >= 10:
+        return "C (Satisfactory)", "#f59e0b", "chip-c"
+    else:
+        return "D (Needs Improvement)", "#ef4444", "chip-d"
+
+def metric_color(factor, value):
+    """Return a CSS class name ('good', 'warn', 'bad', or 'neutral') for a metric card.
+
+    Parameters
+    ----------
+    factor : str
+        One of 'studytime', 'failures', 'goout', or 'absences'.
+    value : int | float
+        The current value of that factor.
+    """
+    if factor == 'studytime':
+        if value >= 3: return 'good'
+        if value == 2: return 'warn'
+        return 'bad'
+    if factor == 'failures':
+        if value == 0: return 'good'
+        if value <= 1: return 'warn'
+        return 'bad'
+    if factor == 'goout':
+        if value <= 3: return 'good'
+        if value == 4: return 'warn'
+        return 'bad'
+    if factor == 'absences':
+        if value <= 5: return 'good'
+        if value <= 15: return 'warn'
+        return 'bad'
+    return 'neutral'
+
+def bar_color(score):
+    """Return a hex colour for an insight bar based on score (0–100)."""
+    if score >= 70:
+        return '#10b981'
+    if score >= 45:
+        return '#f59e0b'
+    return '#ef4444'
+
 def predict_grade(studytime, failures, goout, absences):
     """Make a grade prediction based on input parameters"""
     input_df = pd.DataFrame(0, index=[0], columns=MODEL_COLUMNS)
@@ -451,38 +830,51 @@ def generate_quiz(topic, difficulty, num_questions):
 # --- HEADER ---
 st.markdown("""
 <div class="main-header">
-    <h1>🎓 AI Personalized Learning Assistant</h1>
-    <p>Harness the power of AI to predict your academic performance and receive tailored learning recommendations</p>
+    <h1>🎓 Adhyayan Mitra</h1>
+    <div class="tagline">Your AI-powered academic companion — predict performance, explore potential, and receive personalised learning guidance.</div>
+    <div class="badges">
+        <span class="badge">⚡ Powered by Gemini AI</span>
+        <span class="badge">📊 ML Grade Predictor</span>
+        <span class="badge">🎯 Learning Style Adaptive</span>
+        <span class="badge">🔮 What-If Simulator</span>
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
 # --- SIDEBAR ---
 with st.sidebar:
-    st.markdown("## 📊 Student Profile")
-    st.markdown("---")
-    
-    st.markdown("### 📚 Academic Habits")
-    studytime = st.slider('Weekly Study Time', 1, 4, 2, 
-                          help="1 = <2 hours, 2 = 2-5 hours, 3 = 5-10 hours, 4 = >10 hours")
+    st.markdown('<div class="sidebar-title">📊 Student Profile</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section-title">📚 Academic Habits</div>', unsafe_allow_html=True)
+    studytime = st.slider('Weekly Study Time', 1, 4, 2,
+                          help="1 = <2 hrs/wk · 2 = 2–5 hrs · 3 = 5–10 hrs · 4 = >10 hrs")
     failures = st.slider('Past Class Failures', 0, 4, 0,
-                        help="Number of previous academic failures")
+                        help="Number of previous academic failures (0 is ideal)")
     absences = st.slider('School Absences', 0, 93, 5,
-                        help="Total number of absences this term")
-    
-    st.markdown("### 👥 Social Life")
-    goout = st.slider('Socializing Frequency', 1, 5, 3,
-                     help="1 = Very low, 5 = Very high")
-    
-    st.markdown("### 🧠 Learning Preference")
+                        help="Total absences this term (lower is better)")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section-title">👥 Social Life</div>', unsafe_allow_html=True)
+    goout = st.slider('Socialising Frequency', 1, 5, 3,
+                     help="1 = Very low · 5 = Very high")
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown('<div class="sidebar-section">', unsafe_allow_html=True)
+    st.markdown('<div class="sidebar-section-title">🧠 Learning Style</div>', unsafe_allow_html=True)
     learning_style = st.selectbox(
         "Preferred Learning Style",
         ("Visual", "Auditory", "Reading/Writing", "Kinesthetic"),
-        help="Choose the learning style that works best for you"
+        help="Choose the style that works best for you"
     )
-    
-    st.markdown("---")
-    st.markdown('<div class="info-box">💡 Tip: Be honest with your inputs for the most accurate predictions!</div>', 
-                unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="sidebar-tip">
+        💡 <strong>Tip:</strong> Be honest with your inputs — accurate data leads to more useful personalised advice!
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- MAIN CONTENT WITH TABS ---
 tab1, tab2, tab3, tab4 = st.tabs(["📈 Grade Prediction", "🔮 What-If Analysis", "🎯 Profile Visualization", "📝 Quiz Generator"])
@@ -492,46 +884,70 @@ with tab1:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
+        c = metric_color('studytime', studytime)
+        study_labels = {1: '<2 hrs/wk', 2: '2–5 hrs/wk', 3: '5–10 hrs/wk', 4: '>10 hrs/wk'}
         st.markdown(f"""
-        <div class="metric-card">
+        <div class="metric-card {c}">
+            <div class="metric-icon">📚</div>
             <div class="metric-label">Study Time</div>
             <div class="metric-value">{studytime}/4</div>
+            <div class="metric-sub">{study_labels[studytime]}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col2:
+        c = metric_color('failures', failures)
         st.markdown(f"""
-        <div class="metric-card">
-            <div class="metric-label">Failures</div>
+        <div class="metric-card {c}">
+            <div class="metric-icon">{'✅' if failures == 0 else '⚠️'}</div>
+            <div class="metric-label">Past Failures</div>
             <div class="metric-value">{failures}</div>
+            <div class="metric-sub">{'None — great!' if failures == 0 else f'{failures} failure{"s" if failures>1 else ""}'}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col3:
+        c = metric_color('goout', goout)
+        social_labels = {1: 'Very low', 2: 'Low', 3: 'Moderate', 4: 'High', 5: 'Very high'}
         st.markdown(f"""
-        <div class="metric-card">
+        <div class="metric-card {c}">
+            <div class="metric-icon">👥</div>
             <div class="metric-label">Social Level</div>
             <div class="metric-value">{goout}/5</div>
+            <div class="metric-sub">{social_labels[goout]}</div>
         </div>
         """, unsafe_allow_html=True)
 
     with col4:
+        c = metric_color('absences', absences)
         st.markdown(f"""
-        <div class="metric-card">
+        <div class="metric-card {c}">
+            <div class="metric-icon">🗓️</div>
             <div class="metric-label">Absences</div>
             <div class="metric-value">{absences}</div>
+            <div class="metric-sub">{'Great attendance!' if absences <= 5 else ('Some absences' if absences <= 15 else 'High — review needed')}</div>
         </div>
         """, unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
-    if st.button("🚀 Generate My Personalized Plan", key="predict_btn"):
+    if st.button("🚀 Generate My Personalised Plan", key="predict_btn"):
         predicted_grade = predict_grade(studytime, failures, goout, absences)
-        
+        letter, color, chip_cls = grade_letter(predicted_grade)
+        pct = min(100, max(0, (predicted_grade / 20) * 100))
+
         st.markdown(f"""
         <div class="prediction-box">
             <h2>🎯 Predicted Final Grade</h2>
-            <div class="grade">{predicted_grade:.2f} / 20</div>
+            <div class="grade">{predicted_grade:.1f} <span style="font-size:1.6rem;opacity:0.7">/ 20</span></div>
+            <div class="grade-letter" style="background:rgba(255,255,255,0.18); border-color:{color}; color:#fff;">{letter}</div>
+            <div class="grade-progress-wrap">
+                <div class="grade-progress-bar" style="width:{pct:.0f}%;"></div>
+            </div>
+            <div style="color:rgba(255,255,255,0.6); font-size:0.8rem; margin-top:0.6rem;
+                        display:flex; justify-content:space-between; max-width:280px; margin-left:auto; margin-right:auto;">
+                <span>0</span><span>20</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -541,32 +957,52 @@ with tab1:
         input_df['goout'] = goout
         input_df['absences'] = absences
 
-        with st.spinner("✨ Crafting your personalized learning plan..."):
+        with st.spinner("✨ Crafting your personalised learning plan..."):
             master_prompt = create_master_prompt(input_df.iloc[0], predicted_grade, learning_style)
             response = llm.generate_content(master_prompt)
-            
+
             st.markdown('<div class="response-container">', unsafe_allow_html=True)
-            st.markdown("## 📝 Your Personalized Learning Plan")
+            st.markdown("## 📝 Your Personalised Learning Plan")
             st.markdown(response.text)
             st.markdown('</div>', unsafe_allow_html=True)
 
+    # Grade scale reference
+    st.markdown("""
+    <br>
+    <div style="color:#475569; font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:0.5rem;">
+        Grade Scale Reference (Portuguese system, out of 20)
+    </div>
+    <div class="grade-scale">
+        <span class="grade-chip chip-a">A · 17–20 · Excellent</span>
+        <span class="grade-chip chip-b">B · 14–16 · Good</span>
+        <span class="grade-chip chip-c">C · 10–13 · Satisfactory</span>
+        <span class="grade-chip chip-d">D · 0–9 · Needs Improvement</span>
+    </div>
+    """, unsafe_allow_html=True)
+
 # TAB 2: WHAT-IF ANALYSIS
 with tab2:
-    st.markdown("## 🔮 What-If Analysis: Explore Your Potential")
-    st.markdown("See how different habit changes could impact your final grade. Experiment with different scenarios!")
+    st.markdown('<div class="section-heading">🔮 What-If Analysis: Explore Your Potential</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-sub">See how changing your habits could shift your predicted grade. Experiment freely!</div>', unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
     # Current prediction
     current_grade = predict_grade(studytime, failures, goout, absences)
-    
+    curr_letter, curr_color, _ = grade_letter(current_grade)
+    curr_pct = min(100, max(0, (current_grade / 20) * 100))
+
     col1, col2 = st.columns([1, 1])
-    
+
     with col1:
         st.markdown(f"""
         <div class="prediction-box">
             <h2>📊 Current Prediction</h2>
-            <div class="grade">{current_grade:.2f} / 20</div>
+            <div class="grade">{current_grade:.1f} <span style="font-size:1.4rem;opacity:0.7">/ 20</span></div>
+            <div class="grade-letter" style="border-color:{curr_color};">{curr_letter}</div>
+            <div class="grade-progress-wrap">
+                <div class="grade-progress-bar" style="width:{curr_pct:.0f}%;"></div>
+            </div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -611,21 +1047,29 @@ with tab2:
     
     whatif_grade = predict_grade(whatif_studytime, whatif_failures, whatif_goout, whatif_absences)
     grade_diff = whatif_grade - current_grade
-    
+    whatif_letter, whatif_color, _ = grade_letter(whatif_grade)
+    whatif_pct = min(100, max(0, (whatif_grade / 20) * 100))
+
     st.markdown('</div>', unsafe_allow_html=True)
-    
+
     col1, col2, col3 = st.columns([1, 1, 1])
-    
+
     with col2:
-        diff_class = "" if grade_diff >= 0 else "negative"
+        if grade_diff > 0:
+            diff_class = ""
+        elif grade_diff < 0:
+            diff_class = "negative"
+        else:
+            diff_class = "neutral-diff"
         sign = "+" if grade_diff >= 0 else ""
         emoji = "📈" if grade_diff > 0 else "📉" if grade_diff < 0 else "➡️"
-        
+
         st.markdown(f"""
         <div class="comparison-box {diff_class}">
             <h3>{emoji} Scenario Result</h3>
-            <div class="grade">{whatif_grade:.2f} / 20</div>
-            <div class="diff">{sign}{grade_diff:.2f} points</div>
+            <div class="grade">{whatif_grade:.1f} / 20</div>
+            <div style="color:rgba(255,255,255,0.75); font-size:0.85rem; margin:0.3rem 0;">{whatif_letter}</div>
+            <div class="diff">{sign}{grade_diff:.2f} pts</div>
         </div>
         """, unsafe_allow_html=True)
     
@@ -651,47 +1095,90 @@ with tab2:
 
 # TAB 3: STUDENT PROFILE VISUALIZATION
 with tab3:
-    st.markdown("## 🎯 Your Student Habits Radar")
-    st.markdown("This visualization shows your strengths and areas for improvement across key academic dimensions.")
+    st.markdown('<div class="section-heading">🎯 Your Learning Profile</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-sub">A visualisation of your strengths and areas for improvement across key academic dimensions.</div>', unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
     radar_fig = create_radar_chart(studytime, failures, goout, absences)
     st.plotly_chart(radar_fig, use_container_width=True)
-    
+
     st.markdown("<br>", unsafe_allow_html=True)
-    
+
+    # Compute dimension scores for the insight bars
+    study_score     = int((studytime / 4) * 100)
+    success_score   = int(100 - (failures / 4) * 100)
+    social_score    = int((goout / 5) * 100)
+    attendance_score = int(max(0, 100 - (absences / 93) * 100))
+
     col1, col2 = st.columns(2)
-    
+
     with col1:
-        st.markdown("""
+        st.markdown(f"""
         <div class="response-container">
-            <h3>📊 How to Read Your Profile</h3>
-            <p style='color: #e0e7ff;'>
-            <strong>Study Time:</strong> Higher is better - shows dedication to learning<br>
-            <strong>Academic Success:</strong> Based on past performance (fewer failures = higher score)<br>
-            <strong>Social Balance:</strong> Moderate levels are healthy for well-being<br>
-            <strong>Attendance:</strong> Higher scores indicate better attendance habits
-            </p>
+            <h3>📊 Dimension Breakdown</h3>
+            <div class="insight-row">
+                <span class="insight-label">📚 Study Time</span>
+                <div class="insight-bar-wrap">
+                    <div class="insight-bar" style="width:{study_score}%; background:{bar_color(study_score)};"></div>
+                </div>
+                <span class="insight-score">{study_score}%</span>
+            </div>
+            <div class="insight-row">
+                <span class="insight-label">🏆 Academic Success</span>
+                <div class="insight-bar-wrap">
+                    <div class="insight-bar" style="width:{success_score}%; background:{bar_color(success_score)};"></div>
+                </div>
+                <span class="insight-score">{success_score}%</span>
+            </div>
+            <div class="insight-row">
+                <span class="insight-label">👥 Social Balance</span>
+                <div class="insight-bar-wrap">
+                    <div class="insight-bar" style="width:{social_score}%; background:{bar_color(social_score)};"></div>
+                </div>
+                <span class="insight-score">{social_score}%</span>
+            </div>
+            <div class="insight-row">
+                <span class="insight-label">🗓️ Attendance</span>
+                <div class="insight-bar-wrap">
+                    <div class="insight-bar" style="width:{attendance_score}%; background:{bar_color(attendance_score)};"></div>
+                </div>
+                <span class="insight-score">{attendance_score}%</span>
+            </div>
         </div>
         """, unsafe_allow_html=True)
-    
+
     with col2:
-        st.markdown("""
+        overall = int((study_score + success_score + attendance_score) / 3)
+        insights = []
+        if study_score < 50:
+            insights.append("⬆️ Increasing study time is your biggest lever for improvement.")
+        if success_score < 75:
+            insights.append("📖 Addressing past failures through extra practice can significantly boost your grade.")
+        if social_score > 80:
+            insights.append("⚖️ Your social activity is very high — a small reduction could free up study time.")
+        if attendance_score < 70:
+            insights.append("🗓️ Improving your attendance has a direct impact on learning outcomes.")
+        if not insights:
+            insights.append("🎉 Your profile looks well-balanced — keep up the excellent habits!")
+
+        st.markdown(f"""
         <div class="response-container">
-            <h3>💡 Quick Insights</h3>
-            <p style='color: #e0e7ff;'>
-            A balanced profile typically shows scores between 60-80 across all dimensions. 
-            Extremely high or low values in any area may indicate opportunities for adjustment 
-            to optimize your academic success and personal well-being.
-            </p>
+            <h3>💡 Personalised Insights</h3>
+            <div style="color:#94a3b8; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:0.6rem;">
+                Overall Academic Score
+            </div>
+            <div style="font-family:'Space Grotesk',sans-serif; font-size:2.8rem; font-weight:800; color:#e0e7ff; margin-bottom:0.8rem; line-height:1;">
+                {overall}<span style="font-size:1.2rem; color:#64748b;"> / 100</span>
+            </div>
+            {''.join(f'<p style="color:#c7d2fe; font-size:0.9rem; line-height:1.6; margin:0.5rem 0;">{i}</p>' for i in insights)}
         </div>
         """, unsafe_allow_html=True)
 
 # TAB 4: QUIZ GENERATOR
 with tab4:
-    st.markdown("## 📝 Dynamic Quiz Generator")
-    st.markdown("Generate custom quizzes on any topic to test your knowledge!")
+    st.markdown('<div class="section-heading">📝 Dynamic Quiz Generator</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-sub">Generate custom quizzes on any topic to test and reinforce your knowledge.</div>', unsafe_allow_html=True)
     
     st.markdown("<br>", unsafe_allow_html=True)
     
@@ -735,9 +1222,14 @@ with tab4:
             st.warning("⚠️ Please enter a topic for your quiz!")
 
 # --- FOOTER ---
-st.markdown("<br><br>", unsafe_allow_html=True)
-st.markdown("---")
-st.markdown(
-    "<p style='text-align: center; color: #a5b4fc; font-size: 0.9rem;'>Made by TARS • Built with ❤️ for Student Success</p>",
-    unsafe_allow_html=True
-)
+st.markdown("""
+<div class="footer">
+    Made with ❤️ by <strong style="color:#818cf8;">TARS</strong> &nbsp;·&nbsp;
+    Powered by <strong style="color:#818cf8;">Google Gemini</strong> &amp; <strong style="color:#818cf8;">Streamlit</strong> &nbsp;·&nbsp;
+    Built for Student Success 🎓
+    <br>
+    <span style="font-size:0.78rem; color:#334155; margin-top:0.3rem; display:block;">
+        Dataset: UCI Student Performance (Cortez &amp; Silva, 2008)
+    </span>
+</div>
+""", unsafe_allow_html=True)
