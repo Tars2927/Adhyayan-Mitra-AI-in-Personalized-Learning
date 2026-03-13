@@ -141,9 +141,20 @@ This project has a strong foundation with many possibilities for future enhancem
   * **Advanced "What-If" Analysis:** Enhance the UI to better show how changing specific habits can impact the predicted outcome.
 
 -----
-## Gallery 
-<img width="956" height="458" alt="try1" src="https://github.com/user-attachments/assets/9a339630-e08f-41f3-a7a1-989f3cb44250" />
+## Gallery
 
+### ✨ Redesigned UI (current)
+
+| Tab | Preview |
+|-----|---------|
+| 📈 Grade Prediction | ![Grade Prediction tab](docs/screenshots/tab1-grade-prediction.png) |
+| 🔮 What-If Analysis | ![What-If Analysis tab](docs/screenshots/tab2-whatif.png) |
+| 🎯 Profile Visualization | ![Profile Visualization tab](docs/screenshots/tab3-profile.png) |
+| 📝 Quiz Generator | ![Quiz Generator tab](docs/screenshots/tab4-quiz.png) |
+
+### 🗂️ Original UI
+
+<img width="956" height="458" alt="try1" src="https://github.com/user-attachments/assets/9a339630-e08f-41f3-a7a1-989f3cb44250" />
 
 <img width="959" height="439" alt="try2" src="https://github.com/user-attachments/assets/24ab295e-8951-4f81-891f-0eb3ac43d96a" />
 
